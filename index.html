@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-
-    <title>The HTML5 Herald</title>
-    <meta name="description" content="The HTML5 Herald" />
-    <meta name="author" content="SitePoint" />
-
-    <link rel="stylesheet" href="css/styles.css?v=1.0" />
-  </head>
-
-  <h1>Hello World</h1>
-
-  <body>
-    <script src="js/scripts.js"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quiz Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Math Quiz!</h1>
+        <p id="question-info">Question <span id="current-question">1</span> out of 10</p>
+        <p id="question"></p>
+        <div id="answers">
+            </div>
+        <button onclick="checkAnswer()">Check Answer</button>
+        <p id="feedback"></p>
+        <p id="score">Score: 0/10</p>
+    </div>
+    <script src="script.js"></script>
+</body>
 </html>
