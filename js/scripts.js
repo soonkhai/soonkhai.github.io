@@ -114,6 +114,7 @@ function checkAnswer() {
 
   // Check if it's the last question
   if (currentQuestion === questions.length - 1) {
+    document.getElementById('score').textContent = `Score: ${score}/10`;
     feedbackElement.textContent += ' You finished the quiz!';
     document.querySelector('button').disabled = true; // Disable button
   } else {
