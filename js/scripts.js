@@ -2,6 +2,28 @@ let questions = []; // Array to store questions
 let currentQuestion = 0;
 let score = 0;
 
+// Load quiz data from storage if available
+function loadQuiz() {
+    const storedQuestions = localStorage.getItem('quizQuestions');
+    const storedCurrentQuestion = localStorage.getItem('currentQuestion');
+    const storedScore = localStorage.getItem('score');
+
+    if (storedQuestions) {
+        questions = JSON.parse(storedQuestions);
+        currentQuestion = parseInt(storedCurrentQuestion, 10) || 0;
+        score = parseInt(storedScore, 10) || 0;
+    } else {
+        generateQuestions(); // If no data, generate fresh questions
+    }
+}
+
+// Save quiz data to storage
+function saveQuiz() {
+    localStorage.setItem('quizQuestions', JSON.stringify(questions));
+    localStorage.setItem('currentQuestion', currentQuestion);
+    localStorage.setItem('score', score);
+}
+
 function generateQuestions() {
   for (let i = 0; i < 10; i++) {
     // Randomly choose addition, subtraction, or multiplication
@@ -114,14 +136,14 @@ function checkAnswer() {
 
   // Check if it's the last question
   if (currentQuestion === questions.length - 1) {
-    document.getElementById('score').textContent = `Score: ${score}/10`;
     feedbackElement.textContent += ' You finished the quiz!';
     document.querySelector('button').disabled = true; // Disable button
   } else {
     currentQuestion++;
+    saveQuiz(); // Save progress
     displayQuestion();
   }
 }
 
-generateQuestions(); // Call to generate questions on load
+loadQuiz(); // Load quiz data on page load
 displayQuestion(); // Display the first question
