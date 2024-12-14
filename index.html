@@ -30,6 +30,13 @@
             border-radius: 0.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            border-bottom: 2px solid #0056b3;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -41,8 +48,10 @@
     <div class="container mt-5">
         <div class="card">
             <div class="card-body">
-                <h1 class="card-title text-center">Math Quiz!</h1>
-                <p id="question-info" class="text-center">Question <span id="current-question">1</span> out of 10</p>
+                <div class="header text-center">
+                    <h1>Math Quiz!</h1>
+                    <p id="question-info">Question <span id="current-question">1</span> out of 10</p>
+                </div>
                 <div id="question" class="text-center mb-3"></div>
                 <div id="answers" class="d-flex flex-column align-items-center mb-3"></div>
                 <button class="btn btn-primary w-100 mt-3" onclick="checkAnswer()">Check Answer</button>
