@@ -1,92 +1,146 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Quiz Game</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
-    <style>
-        .navbar {
-            background-color: #007bff;
-        }
-        .navbar-brand {
-            color: white;
-            font-weight: bold;
-        }
-        .navbar-brand:hover {
-            color: #ddd;
-        }
-        .navbar-nav .nav-link {
-            color: white;
-        }
-        .navbar-nav .nav-link:hover {
-            color: #ddd;
-        }
-        .header {
-            background-color: #007bff;
-            color: white;
-            padding: 15px;
-            border-bottom: 2px solid #0056b3;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        body {
-            background-color: #f8f9fa;
-        }
-        .answer-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #007bff;
-            color: white;
-            padding: 10px;
-            margin-bottom: 0.5rem;
-            border-radius: 4px;
-            text-align: left;
-        }
-        .answer-bar:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">Math Quiz</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <div class="container mt-5">
-        <div class="card">
-            <div class="card-body">
-                <div class="header text-center">
-                    <h1>Math Quiz!</h1>
-                    <p id="question-info">Question <span id="current-question">1</span> out of 10</p>
-                </div>
-                <div id="question" class="text-center mb-3"></div>
-                <div id="answers" class="list-group"></div>
-                <button class="btn btn-primary w-100 mt-3" onclick="checkAnswer()">Check Answer</button>
-                <p id="feedback" class="text-center mt-3"></p>
-                <p id="score" class="text-center mt-2">Score: 0/10</p>
-            </div>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/scripts.js"></script>
-</body>
-</html>
+let questions = []; // Array to store questions
+let currentQuestion = 0;
+let score = 0;
+
+// Load quiz data from storage if available
+function loadQuiz() {
+    const storedQuestions = localStorage.getItem('quizQuestions');
+    const storedCurrentQuestion = localStorage.getItem('currentQuestion');
+    const storedScore = localStorage.getItem('score');
+
+    if (storedQuestions) {
+        questions = JSON.parse(storedQuestions);
+        currentQuestion = parseInt(storedCurrentQuestion, 10) || 0;
+        score = parseInt(storedScore, 10) || 0;
+    } else {
+        generateQuestions(); // If no data, generate fresh questions
+    }
+}
+
+// Save quiz data to storage
+function saveQuiz() {
+    localStorage.setItem('quizQuestions', JSON.stringify(questions));
+    localStorage.setItem('currentQuestion', currentQuestion);
+    localStorage.setItem('score', score);
+}
+
+function generateQuestions() {
+  for (let i = 0; i < 10; i++) {
+    // Randomly choose addition, subtraction, or multiplication
+    const operator = Math.random() < 0.33 ? '+' : (Math.random() < 0.66 ? '-' : 'x');
+    
+    let num1, num2;
+    if (operator === 'x') {
+      // Ensure numbers are within a reasonable range for multiplication
+      num1 = Math.floor(Math.random() * 10) + 1;
+      num2 = Math.floor(Math.random() * 10) + 1;
+    } else {
+      num1 = Math.floor(Math.random() * 10) + 1;
+      num2 = Math.floor(Math.random() * 10) + 1;
+    }
+    
+    const question = `What is ${num1} ${operator} ${num2}?`;
+    let answer;
+    switch (operator) {
+      case '+':
+        answer = num1 + num2;
+        break;
+      case '-':
+        answer = num1 - num2;
+        break;
+      case 'x':
+        answer = num1 * num2;
+        break;
+    }
+    
+    // Generate random wrong answers
+    const wrongAnswers = [];
+    for (let j = 0; j < 2; j++) {
+      let wrongAnswer;
+      if (operator === 'x') {
+        wrongAnswer = Math.floor(Math.random() * 50); // Adjust range for multiplication
+      } else {
+        wrongAnswer = Math.floor(Math.random() * 20);
+      }
+      while (wrongAnswer === answer || wrongAnswers.includes(wrongAnswer)) {
+        wrongAnswer = Math.floor(Math.random() * (operator === 'x' ? 50 : 20));
+      }
+      wrongAnswers.push(wrongAnswer);
+    }
+    
+    const options = [answer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+    questions.push({ question, answer, options });
+  }
+}
+
+function displayQuestion() {
+  const question = questions[currentQuestion];
+  document.getElementById('question').textContent = question.question;
+  
+  // Update current question display
+  document.getElementById('current-question').textContent = currentQuestion + 1;
+  
+  const answersContainer = document.getElementById('answers');
+  answersContainer.innerHTML = ''; // Clear previous options
+  
+  question.options.forEach((option, index) => {
+    const answerBar = document.createElement('div');
+    answerBar.className = 'answer-bar list-group-item';
+    answerBar.textContent = option;
+    answersContainer.appendChild(answerBar);
+  });
+}
+
+function checkAnswer() {
+  const selectedOption = document.querySelector('.answer-bar.selected');
+  if (!selectedOption) return; // No option selected
+
+  const answer = parseInt(selectedOption.textContent);
+  const question = questions[currentQuestion];
+  
+  let feedback;
+  if (answer === question.answer) {
+    score++;
+    feedback = 'Correct!';
+  } else {
+    feedback = `Incorrect. The answer is ${question.answer}`;
+  }
+  
+  const feedbackElement = document.getElementById('feedback');
+  feedbackElement.textContent = feedback;
+  feedbackElement.style.opacity = 1; // Make feedback visible
+  
+  setTimeout(() => {
+    feedbackElement.style.opacity = 0; // Hide feedback after a delay
+  }, 1000); // 1 second delay
+
+  // Check if it's the last question
+  if (currentQuestion === questions.length - 1) {
+    feedbackElement.textContent += ' You finished the quiz!';
+    document.querySelector('button').disabled = true; // Disable button
+  } else {
+    currentQuestion++;
+    saveQuiz(); // Save progress
+    displayQuestion();
+  }
+}
+
+function resetQuiz() {
+    // Clear localStorage
+    localStorage.removeItem('quizQuestions');
+    localStorage.removeItem('currentQuestion');
+    localStorage.removeItem('score');
+
+    // Reset variables
+    questions = [];
+    currentQuestion = 0;
+    score = 0;
+
+    // Start a new quiz
+    generateQuestions();
+    displayQuestion();
+}
+
+// Load quiz data on page load
+loadQuiz();
+displayQuestion();
