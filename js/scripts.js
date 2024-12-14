@@ -125,5 +125,22 @@ function checkAnswer() {
   }
 }
 
-loadQuiz(); // Load quiz data on page load
-displayQuestion(); // Display the first question
+function resetQuiz() {
+    // Clear localStorage
+    localStorage.removeItem('quizQuestions');
+    localStorage.removeItem('currentQuestion');
+    localStorage.removeItem('score');
+
+    // Reset variables
+    questions = [];
+    currentQuestion = 0;
+    score = 0;
+
+    // Start a new quiz
+    generateQuestions();
+    displayQuestion();
+}
+
+// Load quiz data on page load
+loadQuiz();
+displayQuestion();
