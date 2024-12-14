@@ -1,3 +1,4 @@
+
 let questions = []; // Array to store questions
 let currentQuestion = 0;
 let score = 0;
