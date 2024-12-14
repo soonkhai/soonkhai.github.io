@@ -84,38 +84,18 @@ function displayQuestion() {
   answersContainer.innerHTML = ''; // Clear previous options
   
   question.options.forEach((option, index) => {
-    const radioInput = document.createElement('input');
-    radioInput.type = 'radio';
-    radioInput.name = 'answer';
-    radioInput.value = option;
-    radioInput.id = `option${index}`;
-    
-    const label = document.createElement('label');
-    label.textContent = option;
-    label.htmlFor = `option${index}`;
-    
-    const answerOption = document.createElement('div');
-    answerOption.className = 'answer-option';
-    answerOption.appendChild(radioInput);
-    answerOption.appendChild(label);
-    
-    answersContainer.appendChild(answerOption);
-  });
-  
-  // Animate answer options on display
-  const answerOptions = document.querySelectorAll('.answer-option');
-  answerOptions.forEach((option, index) => {
-    setTimeout(() => {
-      option.classList.add('show');
-    }, index * 100); // Add a slight delay for each option
+    const answerBar = document.createElement('div');
+    answerBar.className = 'answer-bar list-group-item';
+    answerBar.textContent = option;
+    answersContainer.appendChild(answerBar);
   });
 }
 
 function checkAnswer() {
-  const selectedOption = document.querySelector('input[name="answer"]:checked');
+  const selectedOption = document.querySelector('.answer-bar.selected');
   if (!selectedOption) return; // No option selected
 
-  const answer = parseInt(selectedOption.value);
+  const answer = parseInt(selectedOption.textContent);
   const question = questions[currentQuestion];
   
   let feedback;
