@@ -108,7 +108,7 @@ function checkAnswer() {
   feedbackElement.textContent = feedback;
   feedbackElement.style.opacity = 1; // Make feedback visible
   
-setTimeout(() => {
+  setTimeout(() => {
     feedbackElement.style.opacity = 0; // Hide feedback after a delay
   }, 1000); // 1 second delay
 
